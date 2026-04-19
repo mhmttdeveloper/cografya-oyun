@@ -167,26 +167,6 @@
             color: var(--text-main);
         }
 
-        /* Buton Stilleri */
-        .btn {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
-        }
-
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
-
         /* Iframe Taşıyıcısı */
         .iframe-container {
             width: 100%;
@@ -335,8 +315,7 @@
         <main class="game-area">
             <div class="game-header">
                 <h1>Türkiye Haritası Oyunu</h1>
-                <!-- Geri Getirilen Güvenilir Tam Ekran Butonu -->
-                <button id="fullscreen-btn" class="btn">🔲 Tam Ekran Oyna</button>
+                <!-- Dışarıdaki Tam Ekran butonu tamamen kaldırıldı -->
             </div>
             
             <!-- iframe kapsayıcısı -->
@@ -345,7 +324,7 @@
                 <button id="exit-fullscreen-btn" class="exit-css-fullscreen">✖ Çıkış</button>
                 
                 <!-- Oyun Iframe'i (./ ile bağıl yol kullanıldı) -->
-                <iframe src="./iframe.html" width="100%" height="100%" frameborder="0" allow="fullscreen" allowfullscreen></iframe>
+                <iframe src="./iframe.html" width="100%" height="100%" frameborder="0" allow="fullscreen" allowfullscreen id="game-iframe"></iframe>
             </div>
         </main>
 
@@ -365,55 +344,115 @@
             navList.classList.toggle('active');
         });
 
-        // TAM EKRAN (FULLSCREEN) YÖNETİMİ
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+        // ==========================================
+        // İÇERİDEKİ OYUNU DİNLEYİP DIŞARIYI TAM EKRAN YAPMA MANTIĞI
+        // (Oyun içi butonları iOS'ta da çalışır hale getirir)
+        // ==========================================
         const gameContainer = document.getElementById('game-container');
+        const gameIframe = document.getElementById('game-iframe');
+        const exitBtn = document.getElementById('exit-fullscreen-btn');
 
-        // Tam Ekrana Geçiş Fonksiyonu
-        function openFullscreen() {
-            // Android ve PC'ler için Native Fullscreen API
+        // Dış Çerçeveyi (Ebeveyni) Tam Ekrana Alma
+        function makeParentFullscreen() {
+            // Zaten tam ekrandaysa tekrar çalıştırma
+            if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) return;
+
             if (gameContainer.requestFullscreen) {
-                gameContainer.requestFullscreen();
-            } else if (gameContainer.webkitRequestFullscreen) { /* Safari */
+                // Native API çalıştır (Android/PC)
+                gameContainer.requestFullscreen().catch(err => {
+                    // Beklenmedik bir engel çıkarsa CSS Fallback'e geç
+                    fallbackToCSSFullscreen();
+                });
+            } else if (gameContainer.webkitRequestFullscreen) {
                 gameContainer.webkitRequestFullscreen();
-            } else if (gameContainer.msRequestFullscreen) { /* IE11 */
-                gameContainer.msRequestFullscreen();
             } else {
-                // iPhone/iOS gibi desteklemeyen cihazlar için CSS Fallback Modu
-                gameContainer.classList.add('css-fullscreen');
-                document.body.style.overflow = 'hidden'; // Arka planın kaymasını engelle
+                // iPhone/iOS Safari gibi native desteklemeyen cihazlar için CSS Fallback Modu
+                fallbackToCSSFullscreen();
             }
         }
 
-        // Tam Ekrandan Çıkış Fonksiyonu (Hem Native Hem CSS)
-        function closeFullscreen() {
-            // CSS modunu kapat
+        // CSS ile Sahte Tam Ekran Modu (iOS için kilit nokta)
+        function fallbackToCSSFullscreen() {
+            gameContainer.classList.add('css-fullscreen');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Dış Çerçeveyi Tam Ekrandan Çıkarma
+        function closeParentFullscreen() {
             gameContainer.classList.remove('css-fullscreen');
-            document.body.style.overflow = 'auto'; // Kaydırmayı geri aç
-            
-            // Native modu kapat
-            if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { /* Safari */
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { /* IE11 */
-                    document.msExitFullscreen();
-                }
+            document.body.style.overflow = 'auto';
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
             }
         }
 
-        // Buton Dinleyicileri
-        fullscreenBtn.addEventListener('click', openFullscreen);
-        exitFullscreenBtn.addEventListener('click', closeFullscreen);
+        exitBtn.addEventListener('click', closeParentFullscreen);
 
-        // Kullanıcı klavyeden ESC'ye basarsa veya native geri tuşuyla çıkarsa butonları güncellemek için
+        // Native tam ekrandan ESC veya mobil kaydırma ile çıkılırsa temizlik yap
         document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) closeFullscreen();
+            if (!document.fullscreenElement) closeParentFullscreen();
         });
         document.addEventListener('webkitfullscreenchange', () => {
-            if (!document.webkitFullscreenElement) closeFullscreen();
+            if (!document.webkitFullscreenElement) closeParentFullscreen();
+        });
+
+        // Oyun yüklendiğinde iframe içine sızma operasyonu
+        gameIframe.addEventListener('load', () => {
+            try {
+                const innerWin = gameIframe.contentWindow;
+                const innerDoc = gameIframe.contentDocument || innerWin.document;
+
+                // YÖNTEM 1: Oyunun Native Tam Ekran İsteklerini Ele Geçir
+                // Oyundaki kod 'requestFullscreen' çağırdığında iframe yerine DIŞ KUTUYU tam ekran yaparız.
+                if (innerWin.Element.prototype.requestFullscreen) {
+                    innerWin.Element.prototype.requestFullscreen = function() {
+                        makeParentFullscreen();
+                        return Promise.resolve();
+                    };
+                }
+                if (innerWin.Element.prototype.webkitRequestFullscreen) {
+                    innerWin.Element.prototype.webkitRequestFullscreen = function() {
+                        makeParentFullscreen();
+                    };
+                }
+
+                if (innerWin.Document && innerWin.Document.prototype.exitFullscreen) {
+                    innerWin.Document.prototype.exitFullscreen = function() {
+                        closeParentFullscreen();
+                        return Promise.resolve();
+                    };
+                }
+
+                // YÖNTEM 2: iOS Safari ve Native API'nin çalışmadığı yerler için Tıklama Avcısı (Sinyal Dinleyici)
+                // İçerideki "Tam Ekran" butonuna tıklanıp tıklanmadığını tespit eder.
+                innerDoc.addEventListener('click', (e) => {
+                    let targetElement = e.target;
+                    let targetStr = '';
+                    
+                    for (let i = 0; i < 3; i++) {
+                        if (!targetElement || targetElement === innerDoc) break;
+                        targetStr += (targetElement.className + ' ' + targetElement.id + ' ' + (targetElement.title || '') + ' ' + (targetElement.getAttribute('aria-label') || '')).toLowerCase() + ' ';
+                        targetElement = targetElement.parentElement;
+                    }
+
+                    // Tıklanan alanda tam ekranı çağrıştıran kelimeler varsa
+                    const isFullscreenClick = targetStr.includes('fullscreen') || targetStr.includes('full-screen') || targetStr.includes('tam-ekran') || targetStr.includes('maximize') || targetStr.includes('expand');
+                    
+                    if (isFullscreenClick) {
+                        setTimeout(() => {
+                            if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) {
+                                closeParentFullscreen();
+                            } else {
+                                makeParentFullscreen();
+                            }
+                        }, 50);
+                    }
+                }, true);
+
+            } catch (e) {
+                console.warn("Iframe güvenlik (CORS) engeli. Lütfen dosyaları aynı sunucuda çalıştırın.");
+            }
         });
     </script>
 </body>
