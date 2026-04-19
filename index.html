@@ -171,7 +171,7 @@
         .iframe-container {
             width: 100%;
             flex-grow: 1; 
-            background-color: #000; 
+            background-color: transparent; 
             border-radius: 8px;
             border: 2px solid var(--border-color);
             position: relative;
@@ -397,35 +397,23 @@
             if (!document.webkitFullscreenElement) closeParentFullscreen();
         });
 
-        // Oyun yüklendiğinde iframe içine sızma operasyonu
+        // Oyun yüklendiğinde, uyumluluk modları için mesajlaşma sistemi kur
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'TOGGLE_FULLSCREEN') {
+                if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) {
+                    closeParentFullscreen();
+                } else {
+                    makeParentFullscreen();
+                }
+            }
+        });
+
         gameIframe.addEventListener('load', () => {
             try {
                 const innerWin = gameIframe.contentWindow;
                 const innerDoc = gameIframe.contentDocument || innerWin.document;
 
-                // YÖNTEM 1: Oyunun Native Tam Ekran İsteklerini Ele Geçir
-                // Oyundaki kod 'requestFullscreen' çağırdığında iframe yerine DIŞ KUTUYU tam ekran yaparız.
-                if (innerWin.Element.prototype.requestFullscreen) {
-                    innerWin.Element.prototype.requestFullscreen = function() {
-                        makeParentFullscreen();
-                        return Promise.resolve();
-                    };
-                }
-                if (innerWin.Element.prototype.webkitRequestFullscreen) {
-                    innerWin.Element.prototype.webkitRequestFullscreen = function() {
-                        makeParentFullscreen();
-                    };
-                }
-
-                if (innerWin.Document && innerWin.Document.prototype.exitFullscreen) {
-                    innerWin.Document.prototype.exitFullscreen = function() {
-                        closeParentFullscreen();
-                        return Promise.resolve();
-                    };
-                }
-
-                // YÖNTEM 2: iOS Safari ve Native API'nin çalışmadığı yerler için Tıklama Avcısı (Sinyal Dinleyici)
-                // İçerideki "Tam Ekran" butonuna tıklanıp tıklanmadığını tespit eder.
+                // Tıklama Avcısı (Sinyal Dinleyici - postMessage ile entegre olmayan çok eski cihazlar için)
                 innerDoc.addEventListener('click', (e) => {
                     let targetElement = e.target;
                     let targetStr = '';
@@ -436,22 +424,20 @@
                         targetElement = targetElement.parentElement;
                     }
 
-                    // Tıklanan alanda tam ekranı çağrıştıran kelimeler varsa
                     const isFullscreenClick = targetStr.includes('fullscreen') || targetStr.includes('full-screen') || targetStr.includes('tam-ekran') || targetStr.includes('maximize') || targetStr.includes('expand');
                     
                     if (isFullscreenClick) {
-                        setTimeout(() => {
-                            if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) {
-                                closeParentFullscreen();
-                            } else {
-                                makeParentFullscreen();
-                            }
-                        }, 50);
+                        // Sadece ekstra güvenlik (postMessage çalışmazsa)
+                        if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) {
+                            closeParentFullscreen();
+                        } else {
+                            makeParentFullscreen();
+                        }
                     }
                 }, true);
 
             } catch (e) {
-                console.warn("Iframe güvenlik (CORS) engeli. Lütfen dosyaları aynı sunucuda çalıştırın.");
+                console.warn("Iframe güvenlik (CORS) engeli. PostMessage fallback kullanılacak.");
             }
         });
     </script>

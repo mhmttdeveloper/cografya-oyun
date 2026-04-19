@@ -10,6 +10,7 @@
     font-family: 'Outfit', sans-serif;
     color: #2c3e50;
     overflow: hidden;
+   
 }
 
 
@@ -270,7 +271,7 @@ path:hover {
 /* === MOBİL RESPONSIVE === */
 
 @media screen and (max-width: 768px) {
-    body.cog-body { padding: 4px; }
+    body.cog-body { padding: 0; }
 
     #game-title {
         font-size: 15px;
@@ -607,15 +608,22 @@ path:hover {
 }
         /* Sadece oyun çerçevesine etki edecek izolasyon stilleri. */
         /* Yapıştırılan diğer sayfaların (body, html vb.) global stillerini BOZMAZ. */
+        html, body.cog-body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden !important;
+            background-color: #F4F7F6;
+        }
+
         .cog-game-frame {
             width: 100% !important;
-            min-height: 600px !important;
-            height: 80vh !important;
-            max-height: 900px !important;
-            border-radius: 16px !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08) !important;
-            border: 1px solid rgba(0,0,0,0.05) !important;
-            margin: 20px auto !important;
+            height: 100% !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
             padding: 12px 16px !important;
             box-sizing: border-box !important;
             background: #F4F7F6 !important;
@@ -630,10 +638,10 @@ path:hover {
         }
 
         /* Koyu mod için oyun çerçevesi görünümü */
-        .cog-game-frame.cog-dark-mode {
+        body.cog-body.cog-dark-mode, .cog-game-frame.cog-dark-mode {
             background: #111418 !important;
             border-color: #2a2d32 !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
+            box-shadow: none !important;
             color: #ecf0f1 !important;
         }
     </style>
@@ -1384,7 +1392,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     isPseudoFullscreen = true;
                     updateFullscreenUI();
                 }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
             }
+            
+            // Eğer iframe olarak gömüldüysek, dışarıya da mesaj gönder (tam uyumluluk için)
+            try {
+                window.parent.postMessage({type: 'TOGGLE_FULLSCREEN'}, '*');
+            } catch(e) {}
         });
 
         // Tam ekran durumu değiştiğinde buton metnini/ikonunu güncelle (Native API üzerinden tetiklenirse)
