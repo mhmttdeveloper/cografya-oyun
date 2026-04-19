@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Harita Oyunları | Ana Sayfa</title>
     <style>
         /* CSS Değişkenleri ve Temel Ayarlar */
@@ -167,6 +167,26 @@
             color: var(--text-main);
         }
 
+        /* Buton Stilleri */
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
         /* Iframe Taşıyıcısı */
         .iframe-container {
             width: 100%;
@@ -179,7 +199,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 600px; 
+            min-height: 500px; 
+            transition: all 0.3s ease;
         }
 
         .iframe-container iframe {
@@ -190,6 +211,41 @@
             height: 100%;
             border: none;
             z-index: 10;
+        }
+
+        /* iOS/iPhone İçin Sahte Tam Ekran Modu (Fallback) */
+        .iframe-container.css-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            z-index: 99999 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            margin: 0 !important;
+        }
+
+        /* CSS Fullscreen Aktifken içindeki özel çıkış butonu */
+        .exit-css-fullscreen {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 999999;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .iframe-container.css-fullscreen .exit-css-fullscreen {
+            display: block;
         }
 
         /* Footer */
@@ -212,8 +268,10 @@
                 position: static;
                 margin-top: 20px;
             }
-            .iframe-container {
-                min-height: 500px; 
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
         }
 
@@ -232,6 +290,7 @@
                 background-color: var(--card-bg);
                 padding: 1rem;
                 border-bottom: 1px solid var(--border-color);
+                z-index: 1000;
             }
 
             nav ul.active {
@@ -239,13 +298,14 @@
             }
             
             .iframe-container {
-                min-height: 70vh; 
+                min-height: 60vh; 
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header & Navbar -->
     <header>
         <a href="#" class="logo">🌍 <span>Harita Oyunları</span></a>
         <div class="menu-toggle" id="mobile-menu">☰</div>
@@ -256,8 +316,10 @@
         </nav>
     </header>
 
+    <!-- Ana Düzen: Oyun Alanı ve Sidebar -->
     <div class="layout-wrapper">
         
+        <!-- Sidebar: Diğer Oyunlar -->
         <aside class="sidebar">
             <h3>Diğer Oyunlar</h3>
             <ul class="sidebar-list">
@@ -269,18 +331,27 @@
             </ul>
         </aside>
 
+        <!-- Sağ Taraf: Oyun Alanı -->
         <main class="game-area">
             <div class="game-header">
                 <h1>Türkiye Haritası Oyunu</h1>
+                <!-- Geri Getirilen Güvenilir Tam Ekran Butonu -->
+                <button id="fullscreen-btn" class="btn">🔲 Tam Ekran Oyna</button>
             </div>
             
-            <div class="iframe-container">
-                <iframe src="./iframe.html" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            <!-- iframe kapsayıcısı -->
+            <div class="iframe-container" id="game-container">
+                <!-- CSS Tam Ekrandan çıkış için gizli buton (sadece mobilde aktif olur) -->
+                <button id="exit-fullscreen-btn" class="exit-css-fullscreen">✖ Çıkış</button>
+                
+                <!-- Oyun Iframe'i (./ ile bağıl yol kullanıldı) -->
+                <iframe src="./iframe.html" width="100%" height="100%" frameborder="0" allow="fullscreen" allowfullscreen></iframe>
             </div>
         </main>
 
     </div>
 
+    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Harita Oyunları. Tüm hakları saklıdır. HTML, CSS ve JS ile özel olarak tasarlanmıştır.</p>
     </footer>
@@ -292,6 +363,57 @@
 
         mobileMenu.addEventListener('click', () => {
             navList.classList.toggle('active');
+        });
+
+        // TAM EKRAN (FULLSCREEN) YÖNETİMİ
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+        const gameContainer = document.getElementById('game-container');
+
+        // Tam Ekrana Geçiş Fonksiyonu
+        function openFullscreen() {
+            // Android ve PC'ler için Native Fullscreen API
+            if (gameContainer.requestFullscreen) {
+                gameContainer.requestFullscreen();
+            } else if (gameContainer.webkitRequestFullscreen) { /* Safari */
+                gameContainer.webkitRequestFullscreen();
+            } else if (gameContainer.msRequestFullscreen) { /* IE11 */
+                gameContainer.msRequestFullscreen();
+            } else {
+                // iPhone/iOS gibi desteklemeyen cihazlar için CSS Fallback Modu
+                gameContainer.classList.add('css-fullscreen');
+                document.body.style.overflow = 'hidden'; // Arka planın kaymasını engelle
+            }
+        }
+
+        // Tam Ekrandan Çıkış Fonksiyonu (Hem Native Hem CSS)
+        function closeFullscreen() {
+            // CSS modunu kapat
+            gameContainer.classList.remove('css-fullscreen');
+            document.body.style.overflow = 'auto'; // Kaydırmayı geri aç
+            
+            // Native modu kapat
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Buton Dinleyicileri
+        fullscreenBtn.addEventListener('click', openFullscreen);
+        exitFullscreenBtn.addEventListener('click', closeFullscreen);
+
+        // Kullanıcı klavyeden ESC'ye basarsa veya native geri tuşuyla çıkarsa butonları güncellemek için
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) closeFullscreen();
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement) closeFullscreen();
         });
     </script>
 </body>
