@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Harita Oyunları | Ana Sayfa</title>
+    <title>Türkiye Asbest (Amyant) Yatakları</title>
     <style>
         /* CSS Değişkenleri ve Temel Ayarlar */
         :root {
@@ -94,53 +94,6 @@
             align-items: stretch;
             flex: 1; 
             width: 100%;
-        }
-
-        /* Sidebar (Kenar Çubuğu) */
-        .sidebar {
-            width: 280px;
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            flex-shrink: 0;
-            position: sticky;
-            top: 90px;
-            height: fit-content;
-        }
-
-        .sidebar h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-
-        .sidebar-list {
-            list-style: none;
-        }
-
-        .sidebar-list li {
-            margin-bottom: 0.5rem;
-        }
-
-        .sidebar-list a {
-            display: block;
-            color: var(--text-main);
-            text-decoration: none;
-            padding: 0.8rem 1rem;
-            border-radius: 5px;
-            transition: background 0.2s, color 0.2s;
-            background-color: var(--bg-color);
-            border: 1px solid transparent;
-        }
-
-        .sidebar-list a:hover,
-        .sidebar-list a.active {
-            background-color: var(--border-color);
-            border-color: var(--accent-color);
-            color: var(--accent-color);
         }
 
         /* Oyun Alanı */
@@ -299,22 +252,10 @@
     <!-- Ana Düzen: Oyun Alanı ve Sidebar -->
     <div class="layout-wrapper">
         
-        <!-- Sidebar: Diğer Oyunlar -->
-        <aside class="sidebar">
-            <h3>Diğer Oyunlar</h3>
-            <ul class="sidebar-list">
-                <li><a href="./index.html" class="active">🎯 Türkiye Haritası Oyunu</a></li>
-                <li><a href="./altin-sayfa.html">Türkiye Altın Yatakları</a></li>
-                <li><a href="./asbest-sayfa.html">Türkiye Asbest (Amyant) Yatakları</a></li>
-                <li><a href="#">🏙️ Avrupa Şehirleri</a></li>
-                <li><a href="#">🏔️ Coğrafya Testi</a></li>
-            </ul>
-        </aside>
-
         <!-- Sağ Taraf: Oyun Alanı -->
         <main class="game-area">
             <div class="game-header">
-                <h1>Türkiye Haritası Oyunu</h1>
+                <h1>Türkiye Asbest (Amyant) Yatakları</h1>
                 <!-- Dışarıdaki Tam Ekran butonu tamamen kaldırıldı -->
             </div>
             
@@ -324,7 +265,7 @@
                 <button id="exit-fullscreen-btn" class="exit-css-fullscreen">✖ Çıkış</button>
                 
                 <!-- Oyun Iframe'i (./ ile bağıl yol kullanıldı) -->
-                <iframe src="./türkiye-sehirler.html" width="100%" height="100%" frameborder="0" allow="fullscreen" allowfullscreen id="game-iframe"></iframe>
+                <iframe src="./altin-yataklari.html" width="100%" height="100%" frameborder="0" allow="fullscreen" allowfullscreen id="game-iframe"></iframe>
             </div>
         </main>
 
