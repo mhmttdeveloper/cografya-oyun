@@ -1056,6 +1056,13 @@ path:hover {
     flex-shrink: 0;
 }
 
+.cog-top-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
 .cog-top-actions .cog-info-box {
     padding: 8px 12px;
 }
@@ -1538,43 +1545,52 @@ path:hover {
     }
 
     #top-bar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px 8px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "stats actions"
+            "question question";
+        align-items: start;
+        justify-content: stretch;
+        gap: 8px 10px;
         padding: 8px 10px;
         border-radius: 10px;
     }
 
-    #timer-box,
-    #score-box {
-        order: 1;
+    .cog-top-stats {
+        grid-area: stats;
+        gap: 6px;
+        min-width: 0;
+        flex-wrap: wrap;
     }
 
     #question-area {
-        order: 2;
+        grid-area: question;
         width: 100%;
-        flex: 1 0 100%;
         font-size: clamp(14px, 2vw + 8px, 18px);
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
         text-align: left;
-        padding: 2px 2px 0;
+        padding: 1px 2px 0;
     }
 
     .cog-top-actions {
-        order: 3;
-        width: 100%;
-        justify-content: space-between;
+        grid-area: actions;
+        width: auto;
+        justify-content: flex-end;
         align-items: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 6px;
+        min-width: 0;
     }
 
-    .cog-top-actions .cog-info-box,
-    .cog-info-box {
+    .cog-top-stats .cog-info-box {
+        font-size: 11px;
+        padding: 6px 9px;
+    }
+
+    .cog-top-actions .cog-info-box {
         font-size: 11px;
         padding: 6px 8px;
     }
@@ -1676,25 +1692,43 @@ path:hover {
 @media screen and (max-width: 480px) {
     #top-bar {
         padding: 8px;
+        gap: 7px 8px;
     }
 
     #question-area {
         font-size: 14px;
     }
 
+    .cog-top-stats {
+        gap: 5px;
+    }
+
     .cog-top-actions {
-        justify-content: flex-start;
+        justify-content: flex-end;
+        gap: 5px;
     }
 
-    .cog-hint-btn,
-    #remaining-box {
-        order: 1;
+    .cog-top-stats .cog-info-box,
+    .cog-top-actions .cog-info-box {
+        font-size: 10px;
+        padding: 5px 7px;
     }
 
-    #theme-toggle-btn,
-    #fullscreen-btn,
-    #pause-btn {
-        order: 2;
+    .cog-hint-btn {
+        min-height: 32px;
+        padding: 6px 9px;
+        font-size: 10px;
+    }
+
+    .cog-icon-btn {
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+    }
+
+    .cog-icon-btn svg {
+        width: 20px;
+        height: 20px;
     }
 
     .cog-start-modal,
@@ -1709,6 +1743,20 @@ path:hover {
     .cog-pause-btn:not(.cog-pause-setting-btn) {
         width: 100%;
         min-width: 0;
+    }
+}
+
+@media screen and (max-width: 390px) {
+    #top-bar {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "stats"
+            "actions"
+            "question";
+    }
+
+    .cog-top-actions {
+        justify-content: flex-start;
     }
 }
 
@@ -2039,8 +2087,10 @@ path:hover {
             <h1 id="game-title">Türkiye Altın Yatakları Oyunu</h1>
             
             <div id="top-bar" style="display: none;">
-                <div id="timer-box" class="cog-info-box">Süre: <span id="timer">00:00</span></div>
-                <div id="score-box" class="cog-info-box">Skor: <span id="score">0</span></div>
+                <div class="cog-top-stats">
+                    <div id="timer-box" class="cog-info-box">Süre: <span id="timer">00:00</span></div>
+                    <div id="score-box" class="cog-info-box">Skor: <span id="score">0</span></div>
+                </div>
                 <div id="question-area">Altın yatağı bulunan illeri bul.</div>
                 <div class="cog-top-actions">
                     <button id="hint-btn" class="cog-hint-btn" type="button">İpucu</button>
@@ -2485,12 +2535,12 @@ let gamePaused = false;
 let isMuted = false;
 let isPseudoFullscreen = false;
 const SOUND_FILES = {
-    click: 'click.mp3',
-    combo: 'combo.mp3',
-    correct: 'correct.mp3',
-    wrong: 'wrong.mp3',
-    complete: 'complete.mp3',
-    hint: 'hint.mp3'
+    click: 'sounds/click.mp3',
+    combo: 'sounds/combo.mp3',
+    correct: 'sounds/correct.mp3',
+    wrong: 'sounds/wrong.mp3',
+    complete: 'sounds/complete.mp3',
+    hint: 'sounds/hint.mp3'
 };
 const SOUND_VOLUMES = {
     click: 0.04,
@@ -3297,8 +3347,8 @@ let MAX_SCALE = 6;
 
 function updateScaleLimits() {
     if (window.innerWidth <= 768) {
-        MIN_SCALE = 2;
-        MAX_SCALE = 8;
+        MIN_SCALE = window.innerWidth <= 420 ? 3.2 : 3;
+        MAX_SCALE = 10;
     } else {
         MIN_SCALE = 1;
         MAX_SCALE = 6;
