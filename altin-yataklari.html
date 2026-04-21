@@ -1545,28 +1545,26 @@ path:hover {
     }
 
     #top-bar {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-areas:
-            "stats actions"
-            "question question";
+        display: flex;
+        flex-wrap: wrap;
         align-items: start;
-        justify-content: stretch;
+        justify-content: space-between;
         gap: 8px 10px;
         padding: 8px 10px;
         border-radius: 10px;
     }
 
     .cog-top-stats {
-        grid-area: stats;
+        order: 1;
         gap: 6px;
         min-width: 0;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
 
     #question-area {
-        grid-area: question;
+        order: 3;
         width: 100%;
+        flex: 0 0 100%;
         font-size: clamp(14px, 2vw + 8px, 18px);
         white-space: normal;
         overflow: visible;
@@ -1576,7 +1574,7 @@ path:hover {
     }
 
     .cog-top-actions {
-        grid-area: actions;
+        order: 2;
         width: auto;
         justify-content: flex-end;
         align-items: center;
@@ -1731,6 +1729,11 @@ path:hover {
         height: 20px;
     }
 
+    .cog-top-stats,
+    .cog-top-actions {
+        flex-wrap: nowrap;
+    }
+
     .cog-start-modal,
     .cog-pause-modal {
         padding: 18px 14px;
@@ -1743,20 +1746,6 @@ path:hover {
     .cog-pause-btn:not(.cog-pause-setting-btn) {
         width: 100%;
         min-width: 0;
-    }
-}
-
-@media screen and (max-width: 390px) {
-    #top-bar {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "stats"
-            "actions"
-            "question";
-    }
-
-    .cog-top-actions {
-        justify-content: flex-start;
     }
 }
 
