@@ -1,5 +1,4 @@
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+<style>@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
 
 :root {
     --cog-font-family: 'Baloo 2', sans-serif;
@@ -121,6 +120,8 @@
 }
 
 #top-bar[hidden],
+#learn-bar[hidden],
+#progress-bar-shell[hidden],
 #welcome-text[hidden] {
     display: none !important;
 }
@@ -341,6 +342,27 @@
 .cog-start-setting-btn:hover {
     transform: translateY(-2px);
     opacity: 0.9;
+}
+
+.cog-start-learn-btn {
+    flex: 0 0 auto;
+    height: 40px;
+    min-height: 40px;
+    padding: 4px 13px;
+    border: none;
+    border-radius: 12px;
+    background: #5E949D;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.cog-start-learn-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.92;
 }
 
 .cog-icon-btn svg,
@@ -987,6 +1009,15 @@ path:hover {
     flex-shrink: 0;
 }
 
+.cog-support-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
 .cog-top-stats {
     display: flex;
     align-items: center;
@@ -1184,6 +1215,10 @@ path:hover {
     background: linear-gradient(135deg, rgba(255, 243, 180, 0.96), rgba(255, 220, 93, 0.96));
     color: #7c4a00;
     box-shadow: 0 14px 30px rgba(255, 196, 0, 0.25);
+}
+
+.cog-floating-reward.cog-penalty {
+    color: #b91c1c;
 }
 
 .cog-confetti {
@@ -2016,6 +2051,49 @@ path:hover {
     box-shadow: 0 6px 0 var(--cog-header-shadow), inset 0 3px 0 var(--cog-header-highlight) !important;
 }
 
+.cog-game-frame .cog-learn-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 58px;
+    margin-bottom: 8px;
+    padding: 8px 14px;
+    background: var(--cog-header-base) !important;
+    border: 4px solid var(--border-strong) !important;
+    border-radius: 18px;
+    box-shadow: 0 6px 0 var(--cog-header-shadow), inset 0 3px 0 var(--cog-header-highlight) !important;
+}
+
+.cog-game-frame .cog-learn-menu-btn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    min-height: 38px;
+    padding: 7px 12px;
+    background: var(--cog-button-secondary) !important;
+    color: #ffffff !important;
+    border: 3px solid var(--border-strong) !important;
+    border-radius: 14px;
+    box-shadow: 0 4px 0 var(--cog-button-secondary-shadow), inset 0 2px 0 var(--cog-button-secondary-highlight) !important;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cog-game-frame .cog-learn-title {
+    min-width: 0;
+    padding: 0 96px;
+    color: #ffffff;
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 1.05;
+    text-align: center;
+}
+
 .cog-game-frame #question-area {
     background: var(--cog-question-base) !important;
     color: var(--text-1) !important;
@@ -2132,7 +2210,8 @@ path:hover {
 }
 
 .cog-game-frame #start-btn,
-.cog-game-frame .cog-pause-btn-primary {
+.cog-game-frame .cog-pause-btn-primary,
+.cog-game-frame .cog-start-learn-btn {
     background: var(--cog-button-primary) !important;
     color: var(--text-2) !important;
     border: 4px solid var(--border-strong) !important;
@@ -2383,6 +2462,395 @@ path:hover {
     color: #ffffff !important;
     box-shadow: 0 5px 0 var(--accent-strong) !important;
 }
+
+.cog-game-frame .cog-floating-reward.cog-penalty {
+    background: var(--danger) !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 0 var(--cog-danger-shadow) !important;
+}
+
+/* Harita ustu ilerleme bari */
+.cog-game-frame .cog-progress-shell {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    height: 20px;
+    margin: 8px 0 10px;
+    overflow: hidden;
+    background: var(--cog-dark-panel) !important;
+    border: 4px solid var(--border-strong) !important;
+    border-radius: 12px;
+    box-shadow: 0 5px 0 var(--cog-dark-panel-shadow), inset 0 2px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+.cog-game-frame .cog-progress-fill {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: var(--success) !important;
+    border-radius: 7px;
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.22), inset 0 -3px 0 var(--cog-success-shadow) !important;
+    transition: transform 260ms ease;
+}
+
+.cog-game-frame .cog-progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0));
+    pointer-events: none;
+}
+
+@media (max-width: 680px) {
+    .cog-game-frame .cog-progress-shell {
+        height: 16px;
+        margin: 6px 0 8px;
+        border-width: 3px !important;
+        border-radius: 10px;
+    }
+
+    .cog-game-frame .cog-progress-fill {
+        border-radius: 6px;
+    }
+}
+
+/* Oyun sonu ozeti */
+.cog-game-frame #welcome-text {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.cog-game-frame .cog-final-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.cog-game-frame .cog-final-title {
+    margin: 0;
+    color: var(--text-1) !important;
+    line-height: 1.05;
+}
+
+.cog-game-frame .cog-final-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+.cog-game-frame .cog-final-stat {
+    min-width: 0;
+    padding: 12px 10px 10px;
+    background: var(--cog-dark-panel) !important;
+    color: #ffffff !important;
+    border: 4px solid var(--border-strong) !important;
+    border-radius: 14px;
+    box-shadow: 0 6px 0 var(--cog-dark-panel-shadow), inset 0 2px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+.cog-game-frame .cog-final-stat-label,
+.cog-game-frame .cog-final-stat-value {
+    display: block;
+    color: #ffffff !important;
+    line-height: 1;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.22);
+}
+
+.cog-game-frame .cog-final-stat-label {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.cog-game-frame .cog-final-stat-value {
+    margin-top: 8px;
+    font-size: 38px;
+    font-weight: 900;
+}
+
+.cog-game-frame .cog-final-stat-success {
+    background: #1f8f58 !important;
+    box-shadow: 0 6px 0 #126239, inset 0 2px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+.cog-game-frame .cog-final-stat-danger {
+    background: #bd2f45 !important;
+    box-shadow: 0 6px 0 #7f1f2e, inset 0 2px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+.cog-game-frame .cog-final-stat-score {
+    background: #315eb9 !important;
+    box-shadow: 0 6px 0 #1f3f80, inset 0 2px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+.cog-game-frame .cog-final-stat-accuracy {
+    background: #9b6a18 !important;
+    box-shadow: 0 6px 0 #66430d, inset 0 2px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+.cog-game-frame .cog-final-stat-time {
+    grid-column: 1 / -1;
+    background: #4b6670 !important;
+    box-shadow: 0 6px 0 #2e4249, inset 0 2px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+@media (max-width: 680px) {
+    .cog-game-frame .cog-final-stat-value {
+        font-size: 34px;
+    }
+}
+
+@media (max-width: 390px) {
+    .cog-game-frame .cog-final-summary {
+        gap: 8px;
+    }
+
+    .cog-game-frame .cog-final-stat {
+        padding: 10px 8px 9px;
+        border-width: 3px !important;
+    }
+
+    .cog-game-frame .cog-final-stat-label {
+        font-size: 13px;
+    }
+
+    .cog-game-frame .cog-final-stat-value {
+        font-size: 30px;
+    }
+}
+
+/* Bolge ID'li harita taban rengi state renklerini ezmesin. */
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-correct-city-green path,
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-correct-city path {
+    fill: var(--success) !important;
+    stroke: var(--border-strong) !important;
+    filter: drop-shadow(0px 4px 0px var(--cog-success-shadow)) !important;
+}
+
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-correct-city-pink path {
+    fill: var(--cog-pink) !important;
+    stroke: var(--border-strong) !important;
+    filter: drop-shadow(0px 4px 0px var(--cog-pink-shadow)) !important;
+}
+
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-correct-city-yellow path {
+    fill: var(--cog-card-highlight) !important;
+    stroke: var(--border-strong) !important;
+    filter: drop-shadow(0px 4px 0px var(--cog-title-chip-shadow)) !important;
+}
+
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-correct-city-red path,
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-correct-city-dark-red path {
+    fill: var(--cog-dark-red) !important;
+    stroke: var(--border-strong) !important;
+    filter: drop-shadow(0px 4px 0px var(--cog-dark-red-shadow)) !important;
+}
+
+.cog-game-frame :is(#bolge-1, #bolge-2, #bolge-3, #bolge-4, #bolge-5, #bolge-6, #bolge-7) g.cog-wrong-city path {
+    fill: var(--danger) !important;
+    stroke: var(--border-strong) !important;
+    filter: drop-shadow(0px 4px 0px var(--cog-danger-shadow)) !important;
+}
+
+.cog-game-frame #top-bar.cog-question-row {
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.cog-game-frame #top-bar.cog-question-row .cog-top-stats {
+    order: 1 !important;
+    flex: 1 1 auto !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+}
+
+.cog-game-frame #top-bar.cog-question-row .cog-support-actions {
+    order: 2 !important;
+    flex: 0 0 auto !important;
+    justify-content: flex-end !important;
+    margin-left: auto !important;
+}
+
+.cog-game-frame #top-bar.cog-question-row .cog-top-actions {
+    order: 3 !important;
+    flex: 0 0 auto !important;
+    justify-content: flex-end !important;
+    min-width: 0 !important;
+}
+
+.cog-game-frame #top-bar.cog-question-row #question-area {
+    order: 4 !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+}
+
+@media screen and (max-width: 768px) {
+    .cog-game-frame #top-bar {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        gap: 6px 8px !important;
+        padding: 6px 8px !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    .cog-game-frame .cog-top-stats {
+        order: 1 !important;
+        flex: 1 1 auto !important;
+        justify-content: flex-start !important;
+        gap: 5px !important;
+        min-width: 0 !important;
+    }
+
+    .cog-game-frame .cog-top-actions {
+        order: 2 !important;
+        flex: 0 1 auto !important;
+        justify-content: flex-end !important;
+        gap: 5px !important;
+        margin-left: auto !important;
+        min-width: 0 !important;
+    }
+
+    .cog-game-frame #question-area {
+        order: 3 !important;
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        padding: 2px 2px 0 !important;
+        text-align: left !important;
+        font-size: 14px !important;
+        line-height: 1.15 !important;
+        white-space: normal !important;
+    }
+
+    .cog-game-frame .cog-top-stats .cog-info-box,
+    .cog-game-frame .cog-top-actions .cog-info-box {
+        min-height: 32px !important;
+        padding: 5px 7px !important;
+        font-size: 10px !important;
+        border-width: 3px !important;
+        border-radius: 12px !important;
+    }
+
+    .cog-game-frame .cog-top-actions .cog-icon-btn {
+        width: 32px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+        border-width: 3px !important;
+        border-radius: 12px !important;
+    }
+
+    .cog-game-frame .cog-top-actions .cog-icon-btn svg {
+        width: 19px !important;
+        height: 19px !important;
+    }
+
+    .cog-game-frame .cog-progress-shell {
+        margin: 5px 0 7px !important;
+    }
+
+    .cog-game-frame .cog-svg-turkiye-haritasi {
+        margin-bottom: 78px !important;
+    }
+
+    .cog-game-frame .cog-support-actions {
+        position: fixed !important;
+        left: 10px !important;
+        right: 10px !important;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+        z-index: 1600 !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        padding: 8px !important;
+        background: var(--cog-dark-panel) !important;
+        border: 4px solid var(--border-strong) !important;
+        border-radius: 18px !important;
+        box-shadow: 0 7px 0 var(--cog-dark-panel-shadow), inset 0 2px 0 rgba(255, 255, 255, 0.12) !important;
+    }
+
+    .cog-game-frame .cog-support-actions .cog-hint-btn,
+    .cog-game-frame .cog-support-actions .cog-answer-btn {
+        width: 100% !important;
+        min-height: 54px !important;
+        padding: 10px 12px !important;
+        font-size: 17px !important;
+        line-height: 1 !important;
+        border-radius: 16px !important;
+    }
+
+    .cog-game-frame .cog-hint-card {
+        position: fixed !important;
+        top: auto !important;
+        left: 50% !important;
+        bottom: calc(104px + env(safe-area-inset-bottom, 0px)) !important;
+        z-index: 1700 !important;
+        width: calc(100% - 28px) !important;
+        min-width: 0 !important;
+        max-width: 420px !important;
+    }
+
+    .cog-game-frame .cog-learn-bar {
+        min-height: 52px;
+        padding: 7px 10px;
+        margin-bottom: 7px;
+        border-radius: 16px;
+    }
+
+    .cog-game-frame .cog-learn-menu-btn {
+        left: 8px;
+        min-height: 34px;
+        padding: 6px 9px;
+        border-width: 3px !important;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+
+    .cog-game-frame .cog-learn-title {
+        padding: 0 78px;
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .cog-game-frame .cog-top-stats .cog-info-box,
+    .cog-game-frame .cog-top-actions .cog-info-box {
+        font-size: 9px !important;
+        padding: 5px 6px !important;
+    }
+
+    .cog-game-frame .cog-support-actions {
+        left: 8px !important;
+        right: 8px !important;
+        bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+        gap: 8px !important;
+        padding: 7px !important;
+    }
+
+    .cog-game-frame .cog-support-actions .cog-hint-btn,
+    .cog-game-frame .cog-support-actions .cog-answer-btn {
+        min-height: 50px !important;
+        font-size: 16px !important;
+    }
+
+    .cog-game-frame .cog-hint-card {
+        bottom: calc(94px + env(safe-area-inset-bottom, 0px)) !important;
+        width: calc(100% - 22px) !important;
+    }
+}
 </style>
 
 <body class="cog-body">
@@ -2400,9 +2868,11 @@ path:hover {
                     <div id="score-box" class="cog-info-box">Skor: <span id="score">0</span></div>
                 </div>
                 <div id="question-area">Altın yatağı bulunan illeri bul.</div>
-                <div class="cog-top-actions">
+                <div class="cog-support-actions">
                     <button id="hint-btn" class="cog-hint-btn" type="button">İpucu</button>
                     <button id="answer-btn" class="cog-answer-btn" type="button" disabled aria-disabled="true">Cevap</button>
+                </div>
+                <div class="cog-top-actions">
                     <div id="remaining-box" class="cog-info-box">Kalan: <span id="remaining">18</span></div>
                     <button id="pause-btn" class="cog-fullscreen-btn cog-icon-btn" title="Ayarlar" aria-label="Ayarları aç"></button>
                     <button id="fullscreen-btn" class="cog-fullscreen-btn cog-icon-btn" title="Tam ekran" aria-label="Tam ekran"></button>
@@ -2445,11 +2915,21 @@ path:hover {
                     <div class="cog-start-quick-actions" aria-label="Hızlı ayarlar">
                         <button id="start-fullscreen-btn" class="cog-start-setting-btn cog-icon-btn" type="button" title="Tam ekran" aria-label="Tam ekrana geç"></button>
                         <button id="start-sound-btn" class="cog-start-setting-btn cog-icon-btn" type="button" title="Sesi kapat" aria-label="Sesi kapat"></button>
+                        <button id="learn-btn" class="cog-start-learn-btn" type="button">Öğren</button>
                     </div>
                     
                     <button id="start-btn">Oyuna Başla</button>
                 </div>
             </div>
+        </div>
+
+        <div id="learn-bar" class="cog-learn-bar" hidden>
+            <button id="learn-menu-btn" class="cog-learn-menu-btn" type="button">Ana Menü</button>
+            <div class="cog-learn-title">Altın Yatakları</div>
+        </div>
+
+        <div id="progress-bar-shell" class="cog-progress-shell" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+            <div id="progress-bar-fill" class="cog-progress-fill"></div>
         </div>
 
         <div id="hint-card" class="cog-hint-card" aria-live="polite" aria-hidden="true">
@@ -2759,10 +3239,7 @@ path:hover {
     <!-- ====== KOPYALANABÄ°LÄ°R OYUN BÄ°LEÅENÄ° BÄ°TÄ°ÅÄ° ====== -->
 
     <!-- Betik -->
-    <script src="assets/js/altin-yataklari.js"></script>
-
-</body>
-<script>/* ========================================================
+    <script>/* ========================================================
    TÜRKİYE ALTIN YATAKLARI OYUNU
    ======================================================== */
 
@@ -2797,6 +3274,11 @@ const scoreText      = document.getElementById('score');
 const startBtn       = document.getElementById('start-btn');
 const gameTitle      = document.getElementById('game-title');
 const topBar         = document.getElementById('top-bar');
+const topStats       = document.querySelector('.cog-top-stats');
+const supportActions = document.querySelector('.cog-support-actions');
+const topActions     = document.querySelector('.cog-top-actions');
+const progressBarShell = document.getElementById('progress-bar-shell');
+const progressBarFill  = document.getElementById('progress-bar-fill');
 const startArea      = document.getElementById('start-area');
 const welcomeText    = document.getElementById('welcome-text');
 const gameFrameShell = document.getElementById('game-frame');
@@ -2819,6 +3301,9 @@ const pauseFullscreenBtn = document.getElementById('pause-fullscreen-btn');
 const pauseSoundBtn  = document.getElementById('pause-sound-btn');
 const startFullscreenBtn = document.getElementById('start-fullscreen-btn');
 const startSoundBtn  = document.getElementById('start-sound-btn');
+const learnBtn       = document.getElementById('learn-btn');
+const learnBar       = document.getElementById('learn-bar');
+const learnMenuBtn   = document.getElementById('learn-menu-btn');
 const diffSelectionArea = document.getElementById('diff-selectionArea');
 const diffDescription = document.getElementById('diff-description');
 const zoomInBtn = document.getElementById('zoom-in');
@@ -2889,6 +3374,7 @@ let answerUseCount = 0;
 let autoRevealCount = 0;
 let assistedMineKeys = new Set();
 let gamePaused = false;
+let learnModeActive = false;
 let isMuted = false;
 let isPseudoFullscreen = false;
 const SOUND_FILES = {
@@ -3088,7 +3574,7 @@ function createCityLabels() {
             }
 
             // Kolay modda baÅŸtan gÃ¶ster
-            if (gameDifficulty === 'easy') {
+            if (gameDifficulty === 'easy' && !learnModeActive) {
                 text.classList.add('cog-label-visible');
             }
 
@@ -3101,6 +3587,10 @@ function createCityLabels() {
 
 function revealCityLabel(cityId) {
     if (gameDifficulty === 'easy') return; // Kolay modda zaten aÃ§Ä±k
+    setCityLabelVisible(cityId);
+}
+
+function setCityLabelVisible(cityId) {
     const layer = getOrCreateCityLabelLayer();
     const label = layer.querySelector(`text[data-city-id="${cityId}"]`);
     if (label && !label.classList.contains('cog-label-visible')) {
@@ -3110,10 +3600,73 @@ function revealCityLabel(cityId) {
 
 function updateMissionText() {
     questionText.innerHTML = `<span class="cog-msg-question">${TASK_TEXT}</span>`;
+    scheduleHeaderLayoutUpdate();
 }
 
 function updateRemainingUI() {
     remainingText.textContent = String(remainingMineCount);
+    updateProgressUI();
+}
+
+function updateProgressUI() {
+    if (!progressBarFill || !progressBarShell) return;
+    const revealedCount = Math.max(0, MINE_DATA.length - remainingMineCount);
+    const progressPercent = MINE_DATA.length > 0
+        ? Math.min(100, Math.max(0, Math.round((revealedCount / MINE_DATA.length) * 100)))
+        : 0;
+    progressBarFill.style.transform = `scaleX(${progressPercent / 100})`;
+    progressBarShell.setAttribute('aria-valuenow', String(progressPercent));
+}
+
+function getHeaderItemWidth(element) {
+    if (!element) return 0;
+    if (element === questionText) {
+        const textElement = questionText.querySelector('.cog-msg-question') || questionText;
+        const questionStyles = getComputedStyle(questionText);
+        const textStyles = getComputedStyle(textElement);
+        const measuringText = document.createElement('span');
+        measuringText.textContent = textElement.textContent || '';
+        measuringText.style.position = 'absolute';
+        measuringText.style.visibility = 'hidden';
+        measuringText.style.whiteSpace = 'nowrap';
+        measuringText.style.font = textStyles.font;
+        measuringText.style.letterSpacing = textStyles.letterSpacing;
+        document.body.appendChild(measuringText);
+        const naturalTextWidth = measuringText.getBoundingClientRect().width;
+        measuringText.remove();
+        const horizontalChrome =
+            parseFloat(questionStyles.paddingLeft || 0) +
+            parseFloat(questionStyles.paddingRight || 0) +
+            parseFloat(questionStyles.borderLeftWidth || 0) +
+            parseFloat(questionStyles.borderRightWidth || 0);
+        return Math.ceil(naturalTextWidth + horizontalChrome);
+    }
+    return Math.ceil(element.scrollWidth || element.getBoundingClientRect().width);
+}
+
+function updateHeaderLayoutForFit() {
+    if (!topBar || !questionText || topBar.hidden) return;
+
+    topBar.classList.remove('cog-question-row');
+
+    const topBarStyles = getComputedStyle(topBar);
+    const horizontalPadding =
+        parseFloat(topBarStyles.paddingLeft || 0) +
+        parseFloat(topBarStyles.paddingRight || 0);
+    const gap = parseFloat(topBarStyles.columnGap || topBarStyles.gap || 0) || 0;
+    const items = [topStats, questionText, supportActions, topActions].filter(Boolean);
+    const requiredWidth = items.reduce((total, item) => total + getHeaderItemWidth(item), 0) + gap * Math.max(0, items.length - 1);
+    const availableWidth = topBar.clientWidth - horizontalPadding;
+
+    topBar.classList.toggle('cog-question-row', requiredWidth > availableWidth);
+}
+
+function scheduleHeaderLayoutUpdate() {
+    if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(updateHeaderLayoutForFit);
+    } else {
+        updateHeaderLayoutForFit();
+    }
 }
 
 function playSound(name) {
@@ -3148,6 +3701,27 @@ function getFramePoint(clientX, clientY) {
         x: clientX - rect.left,
         y: clientY - rect.top
     };
+}
+
+function getElementFrameCenter(element) {
+    if (!element || !gameFrameShell) return null;
+    const elementRect = element.getBoundingClientRect();
+    const frameRect = gameFrameShell.getBoundingClientRect();
+    return {
+        x: elementRect.left + elementRect.width / 2 - frameRect.left,
+        y: elementRect.top + elementRect.height / 2 - frameRect.top
+    };
+}
+
+function getSvgFramePoint(svgX, svgY) {
+    if (!svgEl || !gameFrameShell) return null;
+    const screenMatrix = svgEl.getScreenCTM();
+    if (!screenMatrix) return null;
+    const svgPoint = svgEl.createSVGPoint();
+    svgPoint.x = svgX;
+    svgPoint.y = svgY;
+    const screenPoint = svgPoint.matrixTransform(screenMatrix);
+    return getFramePoint(screenPoint.x, screenPoint.y);
 }
 
 function resetAnimationClass(element, className) {
@@ -3191,6 +3765,11 @@ function triggerCorrectFeedback(clickedGroup, point, multiplier) {
 function triggerWrongFeedback(clickedGroup, point) {
     resetAnimationClass(clickedGroup, 'cog-hit-shake');
     if (point) spawnImpactRing(point, 'wrong');
+}
+
+function triggerSupportPenaltyFeedback(point, penalty) {
+    if (!point || penalty <= 0) return;
+    spawnFloatingReward(point, `-${penalty}`, 'penalty');
 }
 
 function triggerConfettiBurst() {
@@ -3263,6 +3842,12 @@ function formatTime(totalSeconds) {
     const mins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
     const secs = (totalSeconds % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
+}
+
+function getAccuracyPercent() {
+    const totalManualAttempts = correctCount + wrongCount;
+    if (totalManualAttempts <= 0) return 0;
+    return Math.round((correctCount / totalManualAttempts) * 100);
 }
 
 function startTimer(reset = true) {
@@ -3381,9 +3966,12 @@ function toggleMutedState() {
 function returnToStartScreen() {
     gameActive = false;
     gamePaused = false;
+    learnModeActive = false;
     closePauseOverlay();
     resetGameState();
     hideElement(topBar);
+    hideElement(learnBar);
+    hideElement(progressBarShell);
     showElement(gameTitle);
     showElement(startArea, DISPLAY_MODES.flex);
     if (welcomeText) {
@@ -3499,8 +4087,12 @@ function resetCityClasses() {
 
 function getManualCorrectCityClassForStreak(wrongStreak) {
     if (wrongStreak <= 0) return 'cog-correct-city-green';
-    if (wrongStreak <= 2) return 'cog-correct-city-pink';
+    if (wrongStreak <= 3) return 'cog-correct-city-pink';
     return 'cog-correct-city-dark-red';
+}
+
+function getMineCityIds() {
+    return Array.from(new Set(MINE_DATA.map(mine => mine.cityId)));
 }
 
 function applyCorrectCityClass(cityGroup, className) {
@@ -3531,6 +4123,7 @@ function resetGameState() {
     hintUseCount = 0;
     answerUseCount = 0;
     autoRevealCount = 0;
+    learnModeActive = false;
     gameActive = false;
     gamePaused = false;
     stopTimer();
@@ -3606,16 +4199,7 @@ function revealSupportTarget(options = {}) {
     } = options;
     if (!gameActive || gamePaused) return;
 
-    const isAutoMode = mode === 'auto';
-    const successMessage = gameDifficulty === 'hard'
-        ? (isAutoMode
-            ? '6 yanlis sonrasi 1 dogru cevap otomatik acildi.'
-            : `Bir dogru cevap acildi. Skor -${penalty}`)
-        : (isAutoMode
-            ? '6 yanlis sonrasi 1 dogru sehir otomatik acildi.'
-            : `Bir dogru sehir acildi. Skor -${penalty}`);
-
-    const finalizeSupportReveal = revealedAmount => {
+    const finalizeSupportReveal = (revealedAmount, feedbackPoint = null) => {
         if (mode === 'answer') {
             registerAnswerUse(penalty);
         } else if (mode === 'auto') {
@@ -3626,7 +4210,7 @@ function revealSupportTarget(options = {}) {
         remainingMineCount = Math.max(0, remainingMineCount - revealedAmount);
         playSound('hint');
         updateRemainingUI();
-        showStatusToast(successMessage, 'success');
+        triggerSupportPenaltyFeedback(feedbackPoint, penalty);
         updateAnswerButtonState();
         queueFinishGameIfCompleted();
     };
@@ -3648,7 +4232,7 @@ function revealSupportTarget(options = {}) {
         cityHitCounts.set(assistedMine.cityId, currentHits + 1);
         if (currentHits === 0) revealCityLabel(assistedMine.cityId);
 
-        finalizeSupportReveal(1);
+        finalizeSupportReveal(1, getSvgFramePoint(assistedMine.x, assistedMine.y));
         return true;
     }
 
@@ -3667,9 +4251,9 @@ function revealSupportTarget(options = {}) {
     }
 
     discoveredCities.add(cityId);
-    if (cityGroup) applyCorrectCityClass(cityGroup, 'cog-correct-city-green');
+    if (cityGroup) applyCorrectCityClass(cityGroup, 'cog-correct-city-dark-red');
     revealCityLabel(cityId);
-    finalizeSupportReveal(revealedCount);
+    finalizeSupportReveal(revealedCount, getElementFrameCenter(cityGroup));
     return true;
 }
 
@@ -3682,7 +4266,10 @@ function revealAssistedAnswer() {
 
 function triggerAutoRevealFromWrongStreak() {
     if (consecutiveWrongCount < 6) return false;
-    return revealSupportTarget({ mode: 'auto' });
+    return revealSupportTarget({
+        mode: 'auto',
+        penalty: GAME_PENALTIES.answer
+    });
 }
 
 function finishGame() {
@@ -3693,19 +4280,40 @@ function finishGame() {
     triggerConfettiBurst();
     closePauseOverlay();
     hideElement(topBar);
+    hideElement(progressBarShell);
     showElement(gameTitle);
     
     hideElement(diffSelectionArea);
     
     if (welcomeText) {
         showElement(welcomeText);
+        const accuracyPercent = getAccuracyPercent();
         welcomeText.innerHTML = `
-            <span class="cog-msg-title">🎉 Tüm Altın Yatakları Bulundu</span>
-            <span class="cog-msg-timer">⏳ Süre: ${formatTime(seconds)}</span>
-            <br><br>
-            <span class="cog-msg-correct">Bulunan Toplam Yatak: ${MINE_DATA.length}</span>
-            <br><br>
-            <span class="cog-msg-accuracy">Skor: ${score}</span>`;
+            <div class="cog-final-card" role="status" aria-live="polite">
+                <span class="cog-msg-title cog-final-title">Tüm Altın Yatakları Bulundu</span>
+                <div class="cog-final-summary" aria-label="Oyun sonu istatistikleri">
+                    <div class="cog-final-stat cog-final-stat-success">
+                        <span class="cog-final-stat-label">Doğru</span>
+                        <span class="cog-final-stat-value">${correctCount}</span>
+                    </div>
+                    <div class="cog-final-stat cog-final-stat-danger">
+                        <span class="cog-final-stat-label">Yanlış</span>
+                        <span class="cog-final-stat-value">${wrongCount}</span>
+                    </div>
+                    <div class="cog-final-stat cog-final-stat-score">
+                        <span class="cog-final-stat-label">Skor</span>
+                        <span class="cog-final-stat-value">${score}</span>
+                    </div>
+                    <div class="cog-final-stat cog-final-stat-accuracy">
+                        <span class="cog-final-stat-label">Doğruluk</span>
+                        <span class="cog-final-stat-value">%${accuracyPercent}</span>
+                    </div>
+                    <div class="cog-final-stat cog-final-stat-time">
+                        <span class="cog-final-stat-label">Süre</span>
+                        <span class="cog-final-stat-value">${formatTime(seconds)}</span>
+                    </div>
+                </div>
+            </div>`;
     }
     
     showElement(startArea, DISPLAY_MODES.flex);
@@ -3722,6 +4330,38 @@ function finishGame() {
 
 let gameDifficulty = 'normal';
 
+function startLearnMode() {
+    if (!initCities()) {
+        alert('LÃ¼tfen Ã¶nce SVG kodlarÄ±nÄ± index.html iÃ§ine yapÄ±ÅŸtÄ±rÄ±n!');
+        return;
+    }
+
+    buildMineLookup();
+    resetGameState();
+    learnModeActive = true;
+    gameActive = false;
+    gamePaused = false;
+
+    hideElement(gameTitle);
+    hideElement(startArea);
+    hideElement(topBar);
+    hideElement(progressBarShell);
+    showElement(learnBar, DISPLAY_MODES.flex);
+    closePauseOverlay();
+
+    resetZoom();
+    createCityLabels();
+    getMineCityIds().forEach(cityId => {
+        const cityGroup = citiesById.get(cityId)?.el;
+        if (cityGroup) applyCorrectCityClass(cityGroup, 'cog-correct-city-green');
+        setCityLabelVisible(cityId);
+    });
+    getRemainingMines().forEach(mine => revealMine(mine));
+    updateAnswerButtonState();
+    hideHintCard();
+    hideStatusToast();
+}
+
 function startGame() {
     const checkedRadio = document.querySelector('input[name="difficulty"]:checked');
     if (checkedRadio) gameDifficulty = checkedRadio.value;
@@ -3734,11 +4374,14 @@ function startGame() {
     buildMineLookup();
     resetGameState();
     gameActive = true;
+    learnModeActive = false;
     gamePaused = false;
 
     hideElement(gameTitle);
     hideElement(startArea);
+    hideElement(learnBar);
     showElement(topBar, DISPLAY_MODES.flex);
+    showElement(progressBarShell);
     closePauseOverlay();
 
     updateRemainingUI();
@@ -3747,6 +4390,7 @@ function startGame() {
     createCityLabels();
     startTimer();
     updateAnswerButtonState();
+    scheduleHeaderLayoutUpdate();
 }
 
 function handleCityClick(clickedGroup, interactionPoint = null) {
@@ -3842,6 +4486,8 @@ mapContainer.addEventListener('click', function(e) {
 });
 
 if (startBtn) startBtn.addEventListener('click', startGame);
+if (learnBtn) learnBtn.addEventListener('click', startLearnMode);
+if (learnMenuBtn) learnMenuBtn.addEventListener('click', returnToStartScreen);
 if (hintBtn) hintBtn.addEventListener('click', showHint);
 if (answerBtn) answerBtn.addEventListener('click', revealAssistedAnswer);
 if (pauseBtn) pauseBtn.addEventListener('click', openPauseOverlay);
@@ -4082,6 +4728,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCities();
     updateRemainingUI();
     updateMissionText();
+    scheduleHeaderLayoutUpdate();
     updateDifficultyDescription(document.querySelector('input[name="difficulty"]:checked')?.value || gameDifficulty);
 
     if (fsBtn && gameFrameShell) {
@@ -4120,6 +4767,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         updateScaleLimits();
         if (scale < MIN_SCALE) resetZoom();
+        scheduleHeaderLayoutUpdate();
     });
 });
 </script>
+
+</body>
+
