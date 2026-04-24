@@ -262,6 +262,111 @@
         <p>&copy; 2026 Harita Oyunları. Tüm hakları saklıdır. HTML, CSS ve JS ile özel olarak tasarlanmıştır.</p>
     </footer>
 
-    
+     <script>
+        // Mobil Menü İşlemleri
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+
+        // ==========================================
+        // İÇERİDEKİ OYUNU DİNLEYİP DIŞARIYI TAM EKRAN YAPMA MANTIĞI
+        // (Oyun içi butonları iOS'ta da çalışır hale getirir)
+        // ==========================================
+        const gameContainer = document.getElementById('game-container');
+        const gameIframe = document.getElementById('game-iframe');
+        const exitBtn = document.getElementById('exit-fullscreen-btn');
+
+        // Dış Çerçeveyi (Ebeveyni) Tam Ekrana Alma
+        function makeParentFullscreen() {
+            // Zaten tam ekrandaysa tekrar çalıştırma
+            if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) return;
+
+            if (gameContainer.requestFullscreen) {
+                // Native API çalıştır (Android/PC)
+                gameContainer.requestFullscreen().catch(err => {
+                    // Beklenmedik bir engel çıkarsa CSS Fallback'e geç
+                    fallbackToCSSFullscreen();
+                });
+            } else if (gameContainer.webkitRequestFullscreen) {
+                gameContainer.webkitRequestFullscreen();
+            } else {
+                // iPhone/iOS Safari gibi native desteklemeyen cihazlar için CSS Fallback Modu
+                fallbackToCSSFullscreen();
+            }
+        }
+
+        // CSS ile Sahte Tam Ekran Modu (iOS için kilit nokta)
+        function fallbackToCSSFullscreen() {
+            gameContainer.classList.add('css-fullscreen');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Dış Çerçeveyi Tam Ekrandan Çıkarma
+        function closeParentFullscreen() {
+            gameContainer.classList.remove('css-fullscreen');
+            document.body.style.overflow = 'auto';
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            }
+        }
+
+        exitBtn.addEventListener('click', closeParentFullscreen);
+
+        // Native tam ekrandan ESC veya mobil kaydırma ile çıkılırsa temizlik yap
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) closeParentFullscreen();
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement) closeParentFullscreen();
+        });
+
+        // Oyun yüklendiğinde, uyumluluk modları için mesajlaşma sistemi kur
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'TOGGLE_FULLSCREEN') {
+                if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) {
+                    closeParentFullscreen();
+                } else {
+                    makeParentFullscreen();
+                }
+            }
+        });
+
+        gameIframe.addEventListener('load', () => {
+            try {
+                const innerWin = gameIframe.contentWindow;
+                const innerDoc = gameIframe.contentDocument || innerWin.document;
+
+                // Tıklama Avcısı (Sinyal Dinleyici - postMessage ile entegre olmayan çok eski cihazlar için)
+                innerDoc.addEventListener('click', (e) => {
+                    let targetElement = e.target;
+                    let targetStr = '';
+                    
+                    for (let i = 0; i < 3; i++) {
+                        if (!targetElement || targetElement === innerDoc) break;
+                        targetStr += (targetElement.className + ' ' + targetElement.id + ' ' + (targetElement.title || '') + ' ' + (targetElement.getAttribute('aria-label') || '')).toLowerCase() + ' ';
+                        targetElement = targetElement.parentElement;
+                    }
+
+                    const isFullscreenClick = targetStr.includes('fullscreen') || targetStr.includes('full-screen') || targetStr.includes('tam-ekran') || targetStr.includes('maximize') || targetStr.includes('expand');
+                    
+                    if (isFullscreenClick) {
+                        // Sadece ekstra güvenlik (postMessage çalışmazsa)
+                        if (document.fullscreenElement || gameContainer.classList.contains('css-fullscreen')) {
+                            closeParentFullscreen();
+                        } else {
+                            makeParentFullscreen();
+                        }
+                    }
+                }, true);
+
+            } catch (e) {
+                console.warn("Iframe güvenlik (CORS) engeli. PostMessage fallback kullanılacak.");
+            }
+        });
+    </script>
 </body>
 </html>
