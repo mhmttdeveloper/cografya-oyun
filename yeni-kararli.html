@@ -1,5 +1,4 @@
-﻿<style>
-  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+﻿<style>@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
 
 :root {
     --cog-font-family: 'Baloo 2', sans-serif;
@@ -2864,7 +2863,6 @@ path:hover {
         filter: none !important;
     }
 }
-
 </style>
 
 <body class="cog-body">
@@ -3253,7 +3251,8 @@ path:hover {
     <!-- ====== KOPYALANABÄ°LÄ°R OYUN BÄ°LEÅENÄ° BÄ°TÄ°ÅÄ° ====== -->
 
     <!-- Betik -->
-    <script>/* ========================================================
+    <script>
+      /* ========================================================
    TÜRKİYE ALTIN YATAKLARI OYUNU
    ======================================================== */
 
@@ -3903,7 +3902,17 @@ function updateFullscreenUI() {
     }
 }
 
-function toggleFullscreen() {
+function notifyParentFullscreen(type) {
+    try {
+        window.parent.postMessage({ type }, '*');
+    } catch (e) {}
+}
+
+function toggleFullscreen(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     if (!gameFrameShell) return;
     const isMobileDevice = MOBILE_DEVICE_PATTERN.test(navigator.userAgent) || window.innerWidth <= 768;
 
@@ -3911,6 +3920,7 @@ function toggleFullscreen() {
         gameFrameShell.classList.remove('cog-ios-fullscreen');
         isPseudoFullscreen = false;
         updateFullscreenUI();
+        notifyParentFullscreen('EXIT_FULLSCREEN');
         if (document.fullscreenElement) {
             if (document.exitFullscreen) document.exitFullscreen();
             else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
@@ -3923,6 +3933,7 @@ function toggleFullscreen() {
         gameFrameShell.classList.add('cog-ios-fullscreen');
         isPseudoFullscreen = true;
         updateFullscreenUI();
+        notifyParentFullscreen('ENTER_FULLSCREEN');
         return;
     }
 
@@ -3932,6 +3943,7 @@ function toggleFullscreen() {
                 gameFrameShell.classList.add('cog-ios-fullscreen');
                 isPseudoFullscreen = true;
                 updateFullscreenUI();
+                notifyParentFullscreen('ENTER_FULLSCREEN');
             });
         } else if (gameFrameShell.webkitRequestFullscreen) {
             gameFrameShell.webkitRequestFullscreen();
@@ -3942,15 +3954,13 @@ function toggleFullscreen() {
             isPseudoFullscreen = true;
             updateFullscreenUI();
         }
+        notifyParentFullscreen('ENTER_FULLSCREEN');
     } else {
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
         else if (document.msExitFullscreen) document.msExitFullscreen();
+        notifyParentFullscreen('EXIT_FULLSCREEN');
     }
-
-    try {
-        window.parent.postMessage({ type: 'TOGGLE_FULLSCREEN' }, '*');
-    } catch (e) {}
 }
 
 function setMutedState(nextMuted) {
@@ -4882,7 +4892,8 @@ document.addEventListener('DOMContentLoaded', () => {
         scheduleHeaderLayoutUpdate();
     });
 });
-</script>
+
+    </script>
 
 </body>
 

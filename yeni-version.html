@@ -466,14 +466,6 @@
             }
         }
 
-        function toggleParentFullscreen() {
-            if (isFullscreenActive()) {
-                closeParentFullscreen();
-            } else {
-                makeParentFullscreen();
-            }
-        }
-
         if (exitBtn) {
             exitBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -500,10 +492,7 @@
 
         window.addEventListener('message', (e) => {
             if (!e.data || typeof e.data !== 'object') return;
-
-            if (e.data.type === 'TOGGLE_FULLSCREEN') {
-                toggleParentFullscreen();
-            }
+            if (e.source !== gameIframe.contentWindow) return;
 
             if (e.data.type === 'ENTER_FULLSCREEN') {
                 makeParentFullscreen();
@@ -515,51 +504,7 @@
         });
 
         gameIframe.addEventListener('load', () => {
-            try {
-                const innerWin = gameIframe.contentWindow;
-                const innerDoc = gameIframe.contentDocument || innerWin.document;
-
-                innerDoc.addEventListener('click', (e) => {
-                    let targetElement = e.target;
-                    let targetStr = '';
-
-                    for (let i = 0; i < 5; i++) {
-                        if (!targetElement || targetElement === innerDoc) break;
-
-                        const className =
-                            typeof targetElement.className === 'string'
-                                ? targetElement.className
-                                : targetElement.className && targetElement.className.baseVal
-                                    ? targetElement.className.baseVal
-                                    : '';
-
-                        targetStr += (
-                            className + ' ' +
-                            (targetElement.id || '') + ' ' +
-                            (targetElement.title || '') + ' ' +
-                            (targetElement.getAttribute && targetElement.getAttribute('aria-label') || '') + ' ' +
-                            (targetElement.textContent || '')
-                        ).toLowerCase() + ' ';
-
-                        targetElement = targetElement.parentElement;
-                    }
-
-                    const isFullscreenClick =
-                        targetStr.includes('fullscreen') ||
-                        targetStr.includes('full-screen') ||
-                        targetStr.includes('tam ekran') ||
-                        targetStr.includes('tam-ekran') ||
-                        targetStr.includes('maximize') ||
-                        targetStr.includes('expand');
-
-                    if (isFullscreenClick) {
-                        toggleParentFullscreen();
-                    }
-                }, true);
-
-            } catch (err) {
-                console.warn('Iframe erişimi engellendi. postMessage sistemi kullanılacak.');
-            }
+            // Fullscreen is controlled only by explicit postMessage events from iframe buttons.
         });
     </script>
 
