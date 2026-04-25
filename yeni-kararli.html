@@ -427,13 +427,13 @@
     color: var(--danger);
 }
 
-#start--btn,
-#pause--btn {
+#start-sound-btn,
+#pause-sound-btn {
     color: var(--accent);
 }
 
-#start--btn[data--state="muted"],
-#pause--btn[data--state="muted"] {
+#start-sound-btn[data-sound-state="muted"],
+#pause-sound-btn[data-sound-state="muted"] {
     color: var(--text-3);
 }
 
@@ -2266,8 +2266,8 @@ path:hover {
     box-shadow: 0 5px 0 var(--cog-gold-shadow), inset 0 3px 0 var(--cog-gold-highlight) !important;
 }
 
-.cog-game-frame #start--btn[data--state="muted"],
-.cog-game-frame #pause--btn[data--state="muted"] {
+.cog-game-frame #start-sound-btn[data-sound-state="muted"],
+.cog-game-frame #pause-sound-btn[data-sound-state="muted"] {
     background: var(--danger) !important;
     color: #ffffff !important;
     box-shadow: 0 5px 0 var(--cog-danger-shadow), inset 0 3px 0 #ff7c86 !important;
@@ -2926,7 +2926,7 @@ path:hover {
 
                     <div class="cog-start-quick-actions" aria-label="Hızlı ayarlar">
                         <button id="start-fullscreen-btn" class="cog-start-setting-btn cog-icon-btn" type="button" title="Tam ekran" aria-label="Tam ekrana geç"></button>
-                        <button id="start--btn" class="cog-start-setting-btn cog-icon-btn" type="button" title="Sesi kapat" aria-label="Sesi kapat"></button>
+                        <button id="start-sound-btn" class="cog-start-setting-btn cog-icon-btn" type="button" title="Sesi kapat" aria-label="Sesi kapat"></button>
                         <button id="learn-btn" class="cog-start-learn-btn" type="button">Öğren</button>
                     </div>
                     
@@ -2960,7 +2960,7 @@ path:hover {
                     <h3 class="cog-diff-header-title">Kontroller</h3>
                     <div class="cog-pause-settings-grid">
                         <button id="pause-fullscreen-btn" class="cog-pause-btn cog-pause-btn-secondary cog-pause-setting-btn cog-icon-btn" type="button" title="Tam ekran" aria-label="Tam ekrana geç"></button>
-                        <button id="pause--btn" class="cog-pause-btn cog-pause-btn-secondary cog-pause-setting-btn cog-icon-btn" type="button" title="Sesi kapat" aria-label="Sesi kapat"></button>
+                        <button id="pause-sound-btn" class="cog-pause-btn cog-pause-btn-secondary cog-pause-setting-btn cog-icon-btn" type="button" title="Sesi kapat" aria-label="Sesi kapat"></button>
                     </div>
                 </div>
                 <div class="cog-pause-actions">
@@ -3311,9 +3311,9 @@ const pauseBtn       = document.getElementById('pause-btn');
 const pauseResumeBtn = document.getElementById('pause-resume-btn');
 const pauseRestartBtn = document.getElementById('pause-restart-btn');
 const pauseFullscreenBtn = document.getElementById('pause-fullscreen-btn');
-const pauseBtn  = document.getElementById('pause--btn');
+const pauseSoundBtn  = document.getElementById('pause-sound-btn');
 const startFullscreenBtn = document.getElementById('start-fullscreen-btn');
-const startBtn  = document.getElementById('start--btn');
+const startSoundBtn  = document.getElementById('start-sound-btn');
 const learnBtn       = document.getElementById('learn-btn');
 const learnBar       = document.getElementById('learn-bar');
 const learnMenuBtn   = document.getElementById('learn-menu-btn');
@@ -3390,13 +3390,13 @@ let gamePaused = false;
 let learnModeActive = false;
 let isMuted = false;
 let isPseudoFullscreen = false;
-const _FILES = {
-    click: './click.mp3',
-    combo: './combo.mp3',
-    correct: './correct.mp3',
-    wrong: './wrong.mp3',
-    complete: './complete.mp3',
-    hint: './hint.mp3'
+const SOUND_FILES = {
+    click: 'sounds/click.mp3',
+    combo: 'sounds/combo.mp3',
+    correct: 'sounds/correct.mp3',
+    wrong: 'sounds/wrong.mp3',
+    complete: 'sounds/complete.mp3',
+    hint: 'sounds/hint.mp3'
 };
 const SOUND_VOLUMES = {
     click: 0.04,
