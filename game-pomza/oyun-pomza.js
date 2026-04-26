@@ -16,8 +16,8 @@ const GAME_CONFIG = Object.freeze({
 { "label": "", "cityId": "kayseri", "x": 496.92, "y": 245.05 },
 { "label": "", "cityId": "bitlis", "x": 852.77, "y": 260.67 },
 { "label": "", "cityId": "bitlis", "x": 872.66, "y": 232.26 },
-{ "label": "", "cityId": "bitlis", "x": 933.03, "y": 203.85 },
-{ "label": "", "cityId": "bitlis", "x": 954.34, "y": 215.93 }
+{ "label": "", "cityId": "van", "x": 933.03, "y": 203.85 },
+{ "label": "", "cityId": "van", "x": 954.34, "y": 215.93 }
 ])
 });
 
