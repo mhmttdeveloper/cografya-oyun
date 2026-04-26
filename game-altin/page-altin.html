@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Türkiye Altın Yatakları</title>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --border-color: #334155;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        html.cog-fullscreen-lock,
+        body.cog-fullscreen-lock {
+            overflow: hidden !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 100% !important;
+            position: fixed !important;
+            inset: 0 !important;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--text-main);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        /* Layout */
+        .layout-wrapper {
+            display: flex;
+            gap: 20px;
+            padding: 2rem 5%;
+            max-width: 1600px;
+            margin: 0 auto;
+            align-items: stretch;
+            flex: 1;
+            width: 100%;
+        }
+
+        .game-area {
+            flex-grow: 1;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .game-header {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .game-header h1 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        /* Iframe kapsayıcısı */
+        .iframe-container {
+            width: 100%;
+            flex-grow: 1;
+            background-color: transparent;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .iframe-container iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 10;
+            display: block;
+            background: #F4F7F6;
+            transform: none;
+            filter: none;
+        }
+
+        /* Mobil/iOS sahte tam ekran */
+        .iframe-container.css-fullscreen {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            max-width: none !important;
+            max-height: none !important;
+            z-index: 2147483647 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #F4F7F6 !important;
+        }
+
+        .iframe-container.css-fullscreen iframe {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+            transform: none !important;
+            filter: none !important;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            html.cog-fullscreen-lock,
+            body.cog-fullscreen-lock {
+                position: static !important;
+                inset: auto !important;
+                height: 100dvh !important;
+            }
+
+            .iframe-container,
+            .iframe-container iframe {
+                transform: none !important;
+                filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                backdrop-filter: none !important;
+            }
+        }
+
+        .iframe-container:fullscreen {
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #F4F7F6 !important;
+        }
+
+        .iframe-container:-webkit-full-screen {
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #F4F7F6 !important;
+        }
+
+        /* Sahte tam ekrandan çıkış butonu */
+        .exit-css-fullscreen {
+            display: none;
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            z-index: 2147483647;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(231, 76, 60, 0.95);
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+        }
+
+        .iframe-container.css-fullscreen .exit-css-fullscreen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        @media (max-width: 992px) {
+            .layout-wrapper {
+                flex-direction: column-reverse;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.85rem 4%;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--card-bg);
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-color);
+                z-index: 1000;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .layout-wrapper {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .game-area {
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            .game-header {
+                margin-bottom: 10px;
+            }
+
+            .game-header h1 {
+                font-size: 1.2rem;
+            }
+
+            .iframe-container {
+                min-height: calc(100dvh - 190px);
+                border-radius: 8px;
+            }
+
+            footer {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .layout-wrapper {
+                padding: 8px;
+            }
+
+            .game-area {
+                padding: 8px;
+            }
+
+            .game-header h1 {
+                font-size: 1rem;
+            }
+
+            .iframe-container {
+                min-height: calc(100dvh - 175px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="#" class="logo">🌍 <span>Harita Oyunları</span></a>
+
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+
+        <nav>
+            <ul id="nav-list">
+                <li><a href="./index.html">Ana Sayfa</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="layout-wrapper">
+        <main class="game-area">
+            <div class="game-header">
+                <h1>Türkiye Altın Yatakları</h1>
+            </div>
+
+            <div class="iframe-container" id="game-container">
+                <button type="button" class="exit-css-fullscreen" id="exit-fullscreen-btn" aria-label="Tam ekrandan çık">×</button>
+
+                <iframe
+                    src="./oyun-altin.html"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    allow="fullscreen"
+                    allowfullscreen
+                    id="game-iframe">
+                </iframe>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Harita Oyunları. Tüm hakları saklıdır. HTML, CSS ve JS ile özel olarak tasarlanmıştır.</p>
+    </footer>
+
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+
+        if (mobileMenu && navList) {
+            mobileMenu.addEventListener('click', () => {
+                navList.classList.toggle('active');
+            });
+        }
+
+        const gameContainer = document.getElementById('game-container');
+        const gameIframe = document.getElementById('game-iframe');
+        const exitBtn = document.getElementById('exit-fullscreen-btn');
+
+        function isFullscreenActive() {
+            return Boolean(
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                gameContainer.classList.contains('css-fullscreen')
+            );
+        }
+
+        function fallbackToCSSFullscreen() {
+            gameContainer.classList.add('css-fullscreen');
+            document.documentElement.classList.add('cog-fullscreen-lock');
+            document.body.classList.add('cog-fullscreen-lock');
+        }
+
+        function makeParentFullscreen() {
+            if (isFullscreenActive()) return;
+
+            const requestFullscreen =
+                gameContainer.requestFullscreen ||
+                gameContainer.webkitRequestFullscreen ||
+                gameContainer.msRequestFullscreen;
+
+            if (requestFullscreen) {
+                try {
+                    const result = requestFullscreen.call(gameContainer);
+
+                    if (result && typeof result.catch === 'function') {
+                        result.catch(() => {
+                            fallbackToCSSFullscreen();
+                        });
+                    }
+                } catch (err) {
+                    fallbackToCSSFullscreen();
+                }
+            } else {
+                fallbackToCSSFullscreen();
+            }
+        }
+
+        function closeParentFullscreen() {
+            gameContainer.classList.remove('css-fullscreen');
+            document.documentElement.classList.remove('cog-fullscreen-lock');
+            document.body.classList.remove('cog-fullscreen-lock');
+
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+
+        if (exitBtn) {
+            exitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeParentFullscreen();
+            });
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                gameContainer.classList.remove('css-fullscreen');
+                document.documentElement.classList.remove('cog-fullscreen-lock');
+                document.body.classList.remove('cog-fullscreen-lock');
+            }
+        });
+
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement) {
+                gameContainer.classList.remove('css-fullscreen');
+                document.documentElement.classList.remove('cog-fullscreen-lock');
+                document.body.classList.remove('cog-fullscreen-lock');
+            }
+        });
+
+        window.addEventListener('message', (e) => {
+            if (!e.data || typeof e.data !== 'object') return;
+            if (e.source !== gameIframe.contentWindow) return;
+
+            if (e.data.type === 'ENTER_FULLSCREEN') {
+                makeParentFullscreen();
+            }
+
+            if (e.data.type === 'EXIT_FULLSCREEN') {
+                closeParentFullscreen();
+            }
+        });
+
+        gameIframe.addEventListener('load', () => {
+            // Fullscreen is controlled only by explicit postMessage events from iframe buttons.
+        });
+    </script>
+
+</body>
+</html>
