@@ -159,16 +159,16 @@ let activeStreakNotice = null;
 let scorePulseTimeout = null;
 let frameShakeTimeout = null;
 const SOUND_FILES = {
-    click: './sounds/click.mp3',
-    combo1: './sounds/combo1.mp3',
-    combo2: './sounds/combo2.mp3',
-    combo3: './sounds/combo3.mp3',
-    combo4: './sounds/combo4.mp3',
-    combo5: './sounds/combo5.mp3',
-    correct: './sounds/correct.mp3',
-    wrong: './sounds/wrong.mp3',
-    complete: './sounds/complete.mp3',
-    hint: './sounds/hint.mp3'
+    click: '../sounds/click.mp3',
+    combo1: '../sounds/combo1.mp3',
+    combo2: '../sounds/combo2.mp3',
+    combo3: '../sounds/combo3.mp3',
+    combo4: '../sounds/combo4.mp3',
+    combo5: '../sounds/combo5.mp3',
+    correct: '../sounds/correct.mp3',
+    wrong: '../sounds/wrong.mp3',
+    complete: '../sounds/complete.mp3',
+    hint: '../sounds/hint.mp3'
 };
 const SOUND_VOLUMES = {
     click: 0.04,
