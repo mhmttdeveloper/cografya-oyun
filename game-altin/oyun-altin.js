@@ -9,7 +9,11 @@ const GAME_CONFIG = Object.freeze({
   learnTitle: 'Altın Yatakları Öğren Modu',
   finishTitle: 'Tüm Altın Yatakları Bulundu',
   cityLabelOverrides: Object.freeze({
-    // Örnek: izmir: { x: 92, y: 235 }
+    ordu: { x: 609.21, y: 120.88 },
+    gumushane: { x: 694.05, y: 151.48 },
+    artvin: { x: 830.82, y: 61.21 },
+    kayseri: { x: 507, y: 237.8 },
+    bilecik: { x: 219.76, y: 135.1 }
   }),
   mineData: Object.freeze([
     { label: "Mastra", cityId: "gumushane", x: 704.08, y: 125.01 },
